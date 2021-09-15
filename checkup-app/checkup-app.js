@@ -1,5 +1,4 @@
 let todo = storageLoad()
-console.log('change')
 
 let filterDatabase = {
     textFilter: '',
