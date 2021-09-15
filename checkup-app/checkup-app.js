@@ -1,29 +1,31 @@
 let todo = storageLoad()
-
+console.log('change')
 
 let filterDatabase = {
     textFilter: '',
-    checkStatus: false
+    checkStatus: false,
+    sortingWay: 'byCreation'
+
 }
 
-todo.forEach(function(individualTodo){
+todo.forEach((individualTodo) =>{
     document.querySelector('#Todos-Web-Print').appendChild(itemDOMrendering(individualTodo))
 })
 document.querySelector('#counter-header').appendChild(todoCounter(todo)) 
 
 
 //Event Listener - Filtering Bar
-document.querySelector('#filtering-Section').addEventListener('input',function(event){
+document.querySelector('#filtering-Section').addEventListener('input',(event)=>{
     filterDatabase.textFilter = event.target.value
     filterAndPrint(todo,filterDatabase)
 })
 
 //Event Listener - Adding new Todo
-document.querySelector('#adding-zone').addEventListener('submit',function(event){
+document.querySelector('#adding-zone').addEventListener('submit',(event)=>{
     event.preventDefault()
     let id = uuidv4()
     let timeStamp = moment().valueOf()
-    if(event.target.elements.InputElementThatAddsTodo.value===''){
+    if(!event.target.elements.InputElementThatAddsTodo.value){
     todo.push({
         id: id,
         title: 'EMPTY Item',
@@ -55,7 +57,7 @@ document.querySelector('#adding-zone').addEventListener('submit',function(event)
 
 
 //Event Listener - Removing a Todo
-document.querySelector('#deleting-zone').addEventListener('submit',function(event){
+document.querySelector('#deleting-zone').addEventListener('submit',(event)=>{
     event.preventDefault()
     todo.splice(event.target.elements.RemovesTodo.value-1,1)
     updateLocalStorage(todo)
@@ -63,20 +65,23 @@ document.querySelector('#deleting-zone').addEventListener('submit',function(even
     filterAndPrint(todo,filterDatabase)
 })
 //Event Listener - checkbox
-document.querySelector('#CheckBox-HitBox').addEventListener('change',function(event){
+document.querySelector('#CheckBox-HitBox').addEventListener('change',(event)=>{
     filterDatabase.checkStatus = event.target.checked
     filterAndPrint(todo,filterDatabase)
 })
 
 //Synchronisation σε ολα τα τρεχουμενα sessions της index
-window.addEventListener('storage', function(event){
+window.addEventListener('storage', (event)=>{
    if(event.key === 'todos'){
        todo = JSON.parse(event.newValue)
        filterAndPrint(todo,filterDatabase)
    }
 })
 
-let bDay = moment().year(1995).month(4).date(4)
-console.log(bDay.format('LL'))
-
+//Dropdown event listener
+document.querySelector('#sort-dropdown').addEventListener('change',(event)=>{
+   filterDatabase.sortingWay = event.target.value
+   filterAndPrint(todo,filterDatabase)
+   updateLocalStorage(todo)
+})
 

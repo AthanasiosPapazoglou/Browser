@@ -1,21 +1,17 @@
 //lib
 
 
-let storageLoad = function(){
+let storageLoad = () => {
+
 let preLoadedJSON = localStorage.getItem('todos')
-if(preLoadedJSON !== null){
-    return JSON.parse(preLoadedJSON)
+return preLoadedJSON ? JSON.parse(preLoadedJSON) : []
 }
-    else{
-    
-    return []
-}}
 
 //
-let todoCounter = function(array){
+let todoCounter = (array) => {
     let i=array.length
     let counter = document.createElement('h1')
-    array.forEach(function(item){
+    array.forEach((item) => {
         if(item.status){
             i--
         }
@@ -24,15 +20,13 @@ let todoCounter = function(array){
     return counter
 }
 
-let updateLocalStorage = function(anArrayToUpdate){
+let updateLocalStorage = (anArrayToUpdate) => {
     localStorage.setItem('todos',JSON.stringify(anArrayToUpdate))
 }
 
 //function that removes a todo item when the left side button is clicked
-let removeLinkedItem = function (itemID){
-    let itemPosition = todo.findIndex(function(noteItem){
-        return noteItem.id === itemID
-    })
+let removeLinkedItem = (itemID) => {
+    let itemPosition = todo.findIndex((noteItem) => noteItem.id === itemID)
     if (itemPosition != -1){
         todo.splice(itemPosition, 1)
     }
@@ -42,7 +36,7 @@ let removeLinkedItem = function (itemID){
 //Forming up the items that will be printed on the browser page 
 //This happens after the filtering phase and before the printing phase 
 //Each item is a div element which is fathering 'button' + 'span' + 'checkbox' elements
-let itemDOMrendering = function (individualTodo){
+let itemDOMrendering = (individualTodo) => {
   
     //Declaring all 4 new elements that represent an item
    let newDiv = document.createElement('div')
@@ -57,7 +51,7 @@ let itemDOMrendering = function (individualTodo){
      newAnchor.textContent = individualTodo.title
      
      //linking and establishing button to appropriate working feautures
-     newButton.addEventListener('click',function(e){
+     newButton.addEventListener('click',(e) =>{
           //Το όρισμα εδω δεν συμβολιζει την οποια τιμη εχει, ειναι ΦΙΞ σταθερη
           removeLinkedItem(individualTodo.id)
           //Γιατι μολις τελειωσει η itemDOMrendering το individualTodo γινεται UNDEFINED 
@@ -70,7 +64,7 @@ let itemDOMrendering = function (individualTodo){
      //first line is the default value of the checkbox prior to any action taken by the user (before event listener being initiated)
      //we want to be checked if status is true, unchecked if false
      newCheckbox.checked = individualTodo.status
-     newCheckbox.addEventListener('change',function(event){
+     newCheckbox.addEventListener('change',(event) =>{
          individualTodo.status = event.target.checked
          updateLocalStorage(todo)
          filterAndPrint(todo,filterDatabase)
@@ -88,8 +82,11 @@ let itemDOMrendering = function (individualTodo){
 
 
 
-let filterAndPrint = function(anArrayToFilter, aFilterSet){
-    let postFilterArray = anArrayToFilter.filter(function(individualTodo){
+let filterAndPrint = (anArrayToFilter, aFilterSet) => {
+    
+    anArrayToFilter = sortingToDoList(anArrayToFilter, aFilterSet.sortingWay)
+
+    let postFilterArray = anArrayToFilter.filter((individualTodo) =>{
        if(!aFilterSet.checkStatus){
         return individualTodo.title.toLowerCase().includes(aFilterSet.textFilter.toLowerCase())
        }
@@ -100,7 +97,7 @@ let filterAndPrint = function(anArrayToFilter, aFilterSet){
     document.querySelector('#counter-header').innerHTML=''
     document.querySelector('#Todos-Web-Print').innerHTML=''
 
-    postFilterArray.forEach(function(individualTodo){
+    postFilterArray.forEach((individualTodo) => {
         document.querySelector('#Todos-Web-Print').appendChild(itemDOMrendering(individualTodo))
     })
     document.querySelector('#counter-header').appendChild(todoCounter(anArrayToFilter))
@@ -108,6 +105,49 @@ let filterAndPrint = function(anArrayToFilter, aFilterSet){
 
 
 //Generating Last Edit
-let lastEditGenerator = function(aTimeStamp){
-    return `Last Edited: ${moment(aTimeStamp).fromNow()}`
-}
+let lastEditGenerator = (aTimeStamp) => `Last Edited: ${moment(aTimeStamp).fromNow()}`
+
+
+//Sorting function 
+let sortingToDoList = (aList, aSortingParameter) => {
+    if (aSortingParameter === "byCreation"){
+        return aList.sort((a,b) =>{
+            if (a.createdAt < b.createdAt){
+                return -1
+            }
+            else if(a.createdAt > b.createdAt){
+                return 1
+            }
+            else{
+                return 0
+            }
+        })
+    }
+    else if(aSortingParameter === "byEdit"){
+        return aList.sort((a,b) =>{
+            if (a.updatedAt > b.updatedAt){
+                return -1
+            }
+            else if(a.updatedAt < b.updatedAt){
+                return 1
+            }
+            else{
+                return 0
+            }
+        })
+
+    }
+    else if(aSortingParameter === "alphabetically"){
+        return aList.sort((a,b)=>{
+            if(a.title.toLowerCase() < b.title.toLowerCase()){
+                return -1
+            }
+            else if(a.title.toLowerCase() > b.title.toLowerCase()){
+                return 1
+            }
+            else{
+                return 0
+            }
+        })
+        }
+    }

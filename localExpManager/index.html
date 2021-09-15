@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+  <html>
+      <head>
+          <body>
+             
+            <h4 id="Create-New-Record">Create New Record</h4>
+             <form id="new-record">
+                 <input id="category-element" placeholder="Set Category (Name)" name="categoryElement">
+                 <input id="amount-element" placeholder="Set Amount (currency)" name="amountElement">
+                 <label>Fixed Expense?<input type="checkbox" id="status-element" name="statusElement">(Yes)</label>
+                 <button id="submit-element">Submit Record</button>
+             </form>
+             
+             
+             <h4 id="filter-options">Filter Options:</h4>
+             <input id='text-filter' placeholder="Filter by text:">
+             <label><input id="hide-fixed" type="checkbox">Hide Fixed records</label>
+             <label><input id="hide-flexible" type="checkbox">Hide Flexible records </label>
+
+             
+             <h4 id="statistics">Statistics:</h4>
+             <span id="total-expenses"> </span>
+             <span id="fix-flex-ratio"> </span>
+
+             
+             <div id="record-list"></div>
+
+
+
+
+
+            <script src = 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js'></script>
+            <script src = 'idlib.js'></script>
+            <script src = 'functions.js'></script>
+            <script src = 'maestro.js'></script>
+          </body>
+      </head>
+  </html>
